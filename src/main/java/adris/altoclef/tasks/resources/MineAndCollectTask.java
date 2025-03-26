@@ -244,6 +244,12 @@ public class MineAndCollectTask extends ResourceTask {
                 miningPos = null;
                 progressChecker.reset();
             }
+            // Check all cardinal directions to see is the block has any faces exposed to the air.
+            if (miningPos != null && !progressChecker.check(mod)) {
+                if (!(WorldHelper.isAir(new BlockPos(miningPos.getX() - 1, miningPos.getY(), miningPos.getZ())) || WorldHelper.isAir(new BlockPos(miningPos.getX() + 1, miningPos.getY(), miningPos.getZ())) || WorldHelper.isAir(new BlockPos(miningPos.getX(), miningPos.getY() - 1, miningPos.getZ())) || WorldHelper.isAir(new BlockPos(miningPos.getX(), miningPos.getY() + 1, miningPos.getZ())) || WorldHelper.isAir(new BlockPos(miningPos.getX(), miningPos.getY(), miningPos.getZ() - 1)) ||WorldHelper.isAir(new BlockPos(miningPos.getX(), miningPos.getY(), miningPos.getZ() + 1)) )) {
+                    blacklist.add(miningPos);
+                }
+            }
             return super.onTick();
         }
 
@@ -268,6 +274,7 @@ public class MineAndCollectTask extends ResourceTask {
             if (obj instanceof BlockPos b) {
                 return mod.getBlockScanner().isBlockAtPosition(b, _blocks) && WorldHelper.canBreak(b);
             }
+
             if (obj instanceof ItemEntity drop) {
                 Item item = drop.getStack().getItem();
                 if (_targets != null) {

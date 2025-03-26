@@ -6,6 +6,7 @@ import adris.altoclef.util.Dimension;
 import adris.altoclef.util.helpers.WorldHelper;
 import baritone.api.pathing.goals.Goal;
 import baritone.api.pathing.goals.GoalXZ;
+import baritone.api.pathing.goals.GoalRunAway;
 import net.minecraft.util.math.BlockPos;
 
 public class GetToXZTask extends CustomBaritoneGoalTask {
@@ -33,7 +34,11 @@ public class GetToXZTask extends CustomBaritoneGoalTask {
 
     @Override
     protected Goal newGoal(AltoClef mod) {
-        return new GoalXZ(x, z);
+        if (Math.abs(x) > 400 || Math.abs(z) > 400) {
+            return new GoalRunAway(40, new BlockPos(x, mod.getPlayer().getBlockY(), z));
+        } else {
+            return new GoalXZ(x, z);
+        }
     }
 
     @Override
